@@ -1,1 +1,5 @@
 webapp.env
+/_assets/public
+/applications/
+/applications/vendor
+/applications/node_modules

@@ -7,13 +7,17 @@ services:
       # dockerfile: docker/nginx/Dockerfile
     depends_on:
       - php
+      - mysql
     ports:
       - ${WEB_PORT:-80}:80
     volumes:
       - ./applications/public:/var/www/html/public
+      - ./applications/storage:/var/www/html/storage
     networks:
       - app-network
-    env_file: "webapp.env"
+    env_file:
+      - "applications/.env"
+      - "webapp.env"
   php:
     container_name: php
     build:
@@ -23,10 +27,30 @@ services:
       - ${PHP_PORT:-9000}:9000
     volumes:
       - ./applications:/var/www/html
+    depends_on:
+      - mysql
     networks:
       - app-network
-    env_file: "webapp.env"
+    env_file:
+      - "applications/.env"
+      - "webapp.env"
+  mysql:
+    container_name: mysql
+    image: mariadb:10.6
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - ${MYSQL_PORT:-3306}:3306
+    networks:
+      - app-network
+    env_file:
+      - "applications/.env"
+      - "webapp.env"
 
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  db_data:
+    driver: 'local'
