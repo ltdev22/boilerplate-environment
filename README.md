@@ -9,6 +9,7 @@ Run `cp webapp.env.example webapp.env` to create a new _.env_ file and setup the
 To run create a php project, like a fresh laravel installation run `docker run --rm --interactive --tty --volume $PWD:/app composer create-project laravel/laravel applications`
 This will create a fresh laravel app inside the _applications_ directory.
 
+To run composer commands you can use the _composer_ service by running `docker compose run --rm composer <command>`
 
 ## Database
 
