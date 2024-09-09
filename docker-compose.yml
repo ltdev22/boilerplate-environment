@@ -47,7 +47,19 @@ services:
     env_file:
       - "applications/.env"
       - "webapp.env"
-  # artisan:
+  artisan:
+    container_name: artisan
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    volumes:
+      - ./applications:/var/www/html
+    entrypoint: [ 'php', 'artisan' ]
+    networks:
+      - app-network
+    env_file:
+      - "applications/.env"
+      - "webapp.env"
   mysql:
     container_name: mysql
     image: mariadb:10.6
