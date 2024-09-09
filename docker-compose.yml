@@ -1,4 +1,16 @@
 services:
+  php-base:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    volumes:
+      - ./applications:/var/www/html
+    env_file:
+      - "applications/.env"
+      - "webapp.env"
+    networks:
+      - app-network
+
   web:
     container_name: web
     build:
@@ -19,47 +31,23 @@ services:
       - "applications/.env"
       - "webapp.env"
   php:
+    extends:
+      service: php-base
     container_name: php
-    build:
-      context: .
-      dockerfile: docker/php/Dockerfile
     ports:
       - ${PHP_PORT:-9000}:9000
-    volumes:
-      - ./applications:/var/www/html
     depends_on:
       - mysql
-    networks:
-      - app-network
-    env_file:
-      - "applications/.env"
-      - "webapp.env"
   composer:
+    extends:
+      service: php-base
     container_name: composer
-    build:
-      context: .
-      dockerfile: docker/php/Dockerfile
-    volumes:
-      - ./applications:/var/www/html
-    entrypoint: [ 'composer' ]
-    networks:
-      - app-network
-    env_file:
-      - "applications/.env"
-      - "webapp.env"
+    entrypoint: [ "composer" ]
   artisan:
+    extends:
+      service: php-base
     container_name: artisan
-    build:
-      context: .
-      dockerfile: docker/php/Dockerfile
-    volumes:
-      - ./applications:/var/www/html
-    entrypoint: [ 'php', 'artisan' ]
-    networks:
-      - app-network
-    env_file:
-      - "applications/.env"
-      - "webapp.env"
+    entrypoint: [ "php", "artisan" ]
   mysql:
     container_name: mysql
     image: mariadb:10.6
