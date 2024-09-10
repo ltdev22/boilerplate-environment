@@ -60,6 +60,18 @@ services:
     env_file:
       - "applications/.env"
       - "webapp.env"
+  npm:
+    container_name: npm
+    image: node:lts-alpine
+    working_dir: /var/www/html
+    volumes:
+      - ./applications:/var/www/html
+    entrypoint: [ 'npm' ]
+    networks:
+      - app-network
+    env_file:
+      - "applications/.env"
+      - "webapp.env"
 
 networks:
   app-network:
