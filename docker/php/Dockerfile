@@ -40,7 +40,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copy the codebase in the working dir of the container
 WORKDIR /var/www/html
-COPY ./applications /var/www/html
+COPY ./working-directory /var/www/html
 RUN chown -R www-data:www-data /var/www/html
 USER www-data
 

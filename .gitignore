@@ -1,5 +1,5 @@
 webapp.env
 /_assets/public
-/applications/
-/applications/vendor
-/applications/node_modules
+/working-directory/
+/working-directory/vendor
+/working-directory/node_modules

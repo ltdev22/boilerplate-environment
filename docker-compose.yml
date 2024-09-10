@@ -4,10 +4,10 @@ services:
       context: .
       dockerfile: docker/php/Dockerfile
     volumes:
-      - ./applications:/var/www/html
+      - ./working-directory:/var/www/html
     env_file:
-      - "applications/.env"
       - "webapp.env"
+      - "working-directory/.env"
     networks:
       - app-network
 
@@ -23,13 +23,14 @@ services:
     ports:
       - ${WEB_PORT:-80}:80
     volumes:
-      - ./applications/public:/var/www/html/public
-      - ./applications/storage:/var/www/html/storage
+      - ./working-directory/public:/var/www/html/public
+      - ./working-directory/storage:/var/www/html/storage
     networks:
       - app-network
     env_file:
-      - "applications/.env"
       - "webapp.env"
+      - "working-directory/.env"
+
   php:
     extends:
       service: php-base
@@ -38,16 +39,19 @@ services:
       - ${PHP_PORT:-9000}:9000
     depends_on:
       - mysql
+
   composer:
     extends:
       service: php-base
     container_name: composer
     entrypoint: [ "composer" ]
+
   artisan:
     extends:
       service: php-base
     container_name: artisan
     entrypoint: [ "php", "artisan" ]
+
   mysql:
     container_name: mysql
     image: mariadb:10.6
@@ -58,20 +62,21 @@ services:
     networks:
       - app-network
     env_file:
-      - "applications/.env"
       - "webapp.env"
+      - "working-directory/.env"
+
   npm:
     container_name: npm
     image: node:lts-alpine
     working_dir: /var/www/html
     volumes:
-      - ./applications:/var/www/html
+      - ./working-directory:/var/www/html
     entrypoint: [ 'npm' ]
     networks:
       - app-network
     env_file:
-      - "applications/.env"
       - "webapp.env"
+      - "working-directory/.env"
 
 networks:
   app-network:

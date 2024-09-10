@@ -8,7 +8,7 @@ RUN mkdir -p /var/log/apache2 && \
     chown -R www-data:www-data /var/log/apache2
 
 WORKDIR /var/www/html/
-COPY ./applications/public /var/www/html/public
+COPY ./working-directory/public /var/www/html/public
 RUN chown -R www-data:www-data /var/www/html
 
 

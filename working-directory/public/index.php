@@ -1,0 +1,4 @@
+<?php
+
+// THIS IS THE INDEX.PHP OF A LARAVEL APPLICATION
+phpinfo();

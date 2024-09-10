@@ -6,19 +6,30 @@ This is a template repository to use for creating new projects/repositories with
 
 Run `cp webapp.env.example webapp.env` to create a new _.env_ file and setup the variables.
 
-To run create a php project, like a fresh laravel installation run `docker run --rm --interactive --tty --volume $PWD:/app composer create-project laravel/laravel applications`
-This will create a fresh laravel app inside the _applications_ directory.
+To run create a php project, like a fresh laravel installation run `docker run --rm --interactive --tty --volume $PWD:/app composer create-project laravel/laravel working-directory`
+This will create a fresh laravel app inside the _working-directory_ directory.
 
 To run any composer commands you can use the _composer_ service by running `docker compose run --rm composer <command>`
 
 To run any artisan commands you can use the _artisan_ service by running `docker compose run --rm artisan <command>`
 
+To run any npm commands you can use the _npm_ service by running `docker compose run --rm npm <command>`
+
+Example: installing Laravel Breeze
+```
+docker compose run --rm composer require laravel/breeze:"^1.26"
+docker compose run --rm artisan breeze:install
+docker compose run --rm artisan migrate
+docker compose run --rm npm install
+docker compose run --rm npm run build
+```
+
 ## Database
 
-If there app in the _applications_ folder is a Laravel app make sure to specify in the docker-compose.yml the _.env_ with the *exact* order
+If there app in the _working-directory_ folder is a Laravel app make sure to specify in the docker-compose.yml the _.env_ with the *exact* order
 ```
  env_file:
-    - "applications/.env" // Laravel .env file
+    - "working-directory/.env" // Laravel .env file
     - "webapp.env"
 ```
 This way will make sure on `docker compose up` that the Laravel environment variables will load first!
