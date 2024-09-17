@@ -22,6 +22,7 @@ services:
       - mysql
     ports:
       - ${WEB_PORT:-80}:80
+      - ${WEB_PORT_SECURE:-443}:443
     volumes:
       - ./working-directory/public:/var/www/html/public
       - ./working-directory/storage:/var/www/html/storage

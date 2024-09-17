@@ -6,9 +6,15 @@ This is a template repository to use for creating new projects/repositories with
 
 Run `cp webapp.env.example webapp.env` to create a new _.env_ file and setup the variables.
 
-To run create a php project, like a fresh laravel installation run `docker run --rm --interactive --tty --volume $PWD:/app composer create-project laravel/laravel working-directory`
+### Creating a fresh application
+To create a php project, like a fresh laravel, run `docker run --rm --interactive --tty --volume $PWD:/app composer create-project laravel/laravel working-directory`
 This will create a fresh laravel app inside the _working-directory_ directory.
 
+### Configuring the app
+To set up a local host, like  `http://boilerplate.local`, need to edit the _/etc/hosts/_ and add `127.0.0.1 http://boilerplate.local`. Then server config file set the server name to the host.
+To enable https locally with mkcert, run through the terminal `mkcert boilerplate` inside _docker/ssl_ folder. This will create the to pem files.
+
+### Running commands through the terminal
 To run any composer commands you can use the _composer_ service by running `docker compose run --rm composer <command>`
 
 To run any artisan commands you can use the _artisan_ service by running `docker compose run --rm artisan <command>`
@@ -24,15 +30,18 @@ docker compose run --rm npm install
 docker compose run --rm npm run build
 ```
 
-## Database
+### Database
 
-If there app in the _working-directory_ folder is a Laravel app make sure to specify in the docker-compose.yml the _.env_ with the *exact* order
+If the app in the _working-directory_ folder is a Laravel app make sure to specify in the docker-compose.yml the _.env_ with the *exact* order
 ```
  env_file:
-    - "working-directory/.env" // Laravel .env file
     - "webapp.env"
+    - "working-directory/.env"
 ```
-This way will make sure on `docker compose up` that the Laravel environment variables will load first!
+This way will make sure that all environment variables will load first and then the ones that Laravel require on `docker compose up`, see for example
+`DB_DATABASE=${MYSQL_DATABASE}`.
+**TODO** This is temporary - need to figure out how to use only one .env file and where is best to place it.
+
 
 #### Setting up database connection and creating a new user
 1. Run `docker-compose exec mysql /bin/bash`
@@ -50,8 +59,8 @@ This way will make sure on `docker compose up` that the Laravel environment vari
 
 #### Connecting to MySQL Gui (TablePlus, Sequel Pro, Mysql Workbench etc)
 Replace the env variables with the values
-1. Host `localhost` or `127.0.0.1`
+1. Host is usually either `localhost` or `127.0.0.1` the rest are same to the env variables
 2. User `MYSQL_USER`
 3. Password `MYSQL_PASSWORD`
 4. Database `MYSQL_DATABASE`
-5. Port `3306`
+5. Port `MYSQL_PORT`

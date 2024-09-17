@@ -1,5 +1,6 @@
 webapp.env
 /_assets/public
+/docker/ssl/*.pem
 /working-directory/
 /working-directory/vendor
 /working-directory/node_modules
