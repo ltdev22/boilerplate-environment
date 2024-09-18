@@ -1,6 +1,6 @@
 FROM nginx:stable-alpine
 
-COPY ./docker/nginx/conf.d/app.conf /etc/nginx/conf.d/default.conf
+COPY ./docker/nginx/templates /etc/nginx/templates
 COPY ./docker/nginx/conf.d/*.conf /etc/nginx/conf.d/
 
 # enable ssl certificate

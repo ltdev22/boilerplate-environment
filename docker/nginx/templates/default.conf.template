@@ -1,19 +1,18 @@
 server {
-    listen 80;
-    server_name boilerplate.local;
+    listen ${WEB_PORT};
+    server_name ${WEB_SERVER_NAME};
     return 301 https://$server_name$request_uri;
 }
 
 server {
-    listen 443 ssl;
-    server_name boilerplate.local;
+    listen ${WEB_PORT_SECURE} ssl;
+    server_name ${WEB_SERVER_NAME};
     index index.php index.html index.htm;
     error_log /var/log/nginx/error.log;
     access_log /var/log/nginx/access.log;
-    root /var/www/html/public/;
+    root ${WEB_SERVER_DOCUMENT_ROOT};
 
     location / {
-        # try_files $uri $uri/ /index.html;
         try_files $uri /index.php$is_args$args;
     }
 
@@ -24,9 +23,9 @@ server {
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_param SCRIPT_NAME $fastcgi_script_name;
         fastcgi_index index.php;
-        fastcgi_pass php:9000;
+        fastcgi_pass php:${PHP_PORT};
     }
 
-    ssl_certificate /etc/ssl/boilerplate.pem;
-    ssl_certificate_key /etc/ssl/boilerplate-key.pem;
+    ssl_certificate /etc/ssl/${WEB_SERVER_ALIAS}.pem;
+    ssl_certificate_key /etc/ssl/${WEB_SERVER_ALIAS}-key.pem;
 }
