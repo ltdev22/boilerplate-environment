@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+
+COMPOSE="docker compose"
+
+# Determine if stdout is a terminal...
+if test -t 1; then
+    # Determine if colors are supported...
+    ncolors=$(tput colors)
+
+    if test -n "$ncolors" && test "$ncolors" -ge 8; then
+        BOLD="$(tput bold)"
+        YELLOW="$(tput setaf 3)"
+        GREEN="$(tput setaf 2)"
+        NC="$(tput sgr0)"
+    fi
+fi
+
+# Function that prints the available commands...
+function display_help {
+    cat << EOF
+Develop is a command line tool for running various terminal commands for the development of the web application.
+
+${YELLOW}Usage:${NC}
+  ./develop COMMAND [options] [arguments]
+
+Various commands passed to the ${COMPOSE} binary:
+
+${YELLOW}Running ${COMPOSE} commands:${NC}
+  ${GREEN}./develop up${NC}        Start the application
+  ${GREEN}./develop up -d${NC}     Start the application in the background
+  ${GREEN}./develop stop${NC}      Stop the application
+  ${GREEN}./develop down${NC}      Stop the application and kill all containers
+  ${GREEN}./develop restart${NC}   Restart the application
+  ${GREEN}./develop ps${NC}        Display the status of all containers
+
+${YELLOW}If using Laravel, running artisan commands:${NC}
+  ${GREEN}./develop artisan [command]${NC}      Running an artisan command
+Examples:
+  ${GREEN}./develop artisan make:controller FooController${NC}
+  ${GREEN}./develop artisan queue:work${NC}
+For tinker you can also run
+  ${GREEN}./develop tinker${NC}       Start a new Laravel Tinker session
+
+${YELLOW}running Composer commands:${NC}
+  ${GREEN}./develop composer [command]${NC}       Run a Composer command
+Examples:
+  ${GREEN}./develop composer require laravel/sanctum${NC}
+  ${GREEN}./develop composer dump-autoload -o${NC}
+
+${YELLOW}running PHP commands:${NC}
+  ${GREEN}./develop php [command]${NC}      Run a snippet of PHP code
+Example:
+  ${GREEN}./develop php --version${NC}
+
+${YELLOW}running npm commands:${NC}
+  ${GREEN}./develop npm [command]${NC}        Run a npm command
+Examples:
+  ${GREEN}./develop npm install${NC}
+  ${GREEN}./develop npm run prod${NC}
+EOF
+    exit 1
+}
+
+# Proxy the "help" command...
+if [ $# -gt 0 ]; then
+    if [ "$1" == "help" ] || [ "$1" == "-h" ] || [ "$1" == "-help" ] || [ "$1" == "--help" ]; then
+        display_help
+    fi
+else
+    display_help
+fi
+
+if [ $# -gt 0 ]; then
+
+    # If "artisan" is used, pass through to "artisan" service and run the artisan command from the params passed
+    if [ "$1" == "artisan" ]; then
+        shift 1
+        $COMPOSE run --rm artisan "$@"
+    
+    elif [ "$1" == "tinker" ]; then
+        shift 1
+        $COMPOSE run --rm artisan tinker
+
+    # If "composer" is used, pass through to "composer" service and run the command from the params passed
+    elif [ "$1" == "composer" ]; then
+        shift 1
+        $COMPOSE run --rm composer "$@"
+
+    # If "php" is used, pass through to "php" service and run the command from the params passed,
+    # eg use: ./develop php --version
+    elif [ "$1" == "php" ]; then
+        shift 1
+        $COMPOSE run --rm --no-deps\
+            -w /var/www/html \
+            php \
+            php "$@"
+
+    # If "npm" is used, run npm from the node container
+    # eg use: ./develop npm -v
+    elif [ "$1" == "npm" ]; then
+        shift 1
+        $COMPOSE run --rm \
+            -w /var/www/html \
+            npm \
+            npm "$@"
+
+    else
+        $COMPOSE "$@"
+    fi
+else
+    $COMPOSE ps
+fi

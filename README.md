@@ -15,13 +15,10 @@ To set up a local host, like  `http://boilerplate.local`, need to edit the _/etc
 To enable https locally with mkcert, run through the terminal `mkcert boilerplate` inside _docker/ssl_ folder. This will create the to pem files.
 
 ### Running commands through the terminal
-To run any composer commands you can use the _composer_ service by running `docker compose run --rm composer <command>`
 
-To run any artisan commands you can use the _artisan_ service by running `docker compose run --rm artisan <command>`
-
-To run any npm commands you can use the _npm_ service by running `docker compose run --rm npm <command>`
-
-Example: installing Laravel Breeze
+To run easily various commands through the terminal, you can use the _develop_ executable. 
+Run `./develop -h` or `./develop --help` to see how it works. If you don't want to use _develop_ 
+(although it is the recommended way) you can run the commands directly using _docker compose_ like this example: 
 ```
 docker compose run --rm composer require laravel/breeze:"^1.26"
 docker compose run --rm artisan breeze:install
