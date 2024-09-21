@@ -14,6 +14,13 @@ This will create a fresh laravel app inside the _working-directory_ directory.
 To set up a local host, like  `http://boilerplate.local`, need to edit the _/etc/hosts/_ and add `127.0.0.1 http://boilerplate.local`. Then server config file set the server name to the host.
 To enable https locally with mkcert, run through the terminal `mkcert boilerplate` inside _docker/ssl_ folder. This will create the to pem files.
 
+For Laravel applications to maintain a single `.env` file, copy all the variables from _.env_ to _docker/webapp.env_. Then in the `bootstrap/app.php` file, right before the last line where `return $app;` is,
+add the following two lines of code and restart docker.
+```
+$app->useEnvironmentPath(dirname(__DIR__, 2) . '/docker');
+$app->loadEnvironmentFrom('webapp.env');
+```
+
 ### Running commands through the terminal
 
 To run easily various commands through the terminal, you can use the _develop_ executable. 
@@ -32,7 +39,7 @@ docker compose run --rm npm run build
 If the app in the _working-directory_ folder is a Laravel app make sure to specify in the docker-compose.yml the _.env_ with the *exact* order
 ```
  env_file:
-    - "webapp.env"
+    - "./docker/webapp.env"
     - "working-directory/.env"
 ```
 This way will make sure that all environment variables will load first and then the ones that Laravel require on `docker compose up`, see for example

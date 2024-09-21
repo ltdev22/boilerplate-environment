@@ -41,6 +41,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy the codebase in the working dir of the container
 WORKDIR /var/www/html
 COPY ./working-directory /var/www/html
+COPY ./docker/webapp.env /var/www/docker/webapp.env
 RUN chown -R www-data:www-data /var/www/html
 USER www-data
 
